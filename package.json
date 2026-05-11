@@ -1,6 +1,6 @@
 {
   "name": "gestordevideosjoviatfix",
-  "main": "./App.tsx",
+  "main": "./index.ts",
   "version": "1.0.0",
   "scripts": {
     "start": "expo start",
