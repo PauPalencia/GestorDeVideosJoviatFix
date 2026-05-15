@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { FlatList, Modal, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import { FloatingMenu } from '../components/FloatingMenu';
 import { NowPlayingBar } from '../components/NowPlayingBar';
@@ -7,18 +7,24 @@ import { VideoPlayer } from '../components/VideoPlayer';
 import { colors } from '../theme/colors';
 import { detectSource } from '../utils/video';
 import { Video } from '../types/models';
-import { createVideo } from '../services/firebaseService';
+import { createVideo, fetchUserVideos } from '../services/firebaseService';
 import { useAuth } from '../context/AuthContext';
-
-const seed: Video[] = [];
 
 export const HomeScreen = ({ navigation }: any) => {
   const { user } = useAuth();
-  const [currentVideo, setCurrentVideo] = useState<Video | undefined>(seed[0]);
-  const [videos, setVideos] = useState<Video[]>(seed);
+  const [currentVideo, setCurrentVideo] = useState<Video | undefined>(undefined);
+  const [videos, setVideos] = useState<Video[]>([]);
   const [editorOpen, setEditorOpen] = useState(false);
   const [url, setUrl] = useState('');
   const [title, setTitle] = useState('');
+
+  useEffect(() => {
+    if (!user) return;
+    fetchUserVideos(user.uid).then((data) => {
+      setVideos(data as Video[]);
+      if (data.length > 0) setCurrentVideo(data[0] as Video);
+    });
+  }, [user]);
 
   const subtitle = useMemo(() => currentVideo?.authorName ?? 'Sense vídeo seleccionat', [currentVideo]);
 
@@ -30,10 +36,14 @@ export const HomeScreen = ({ navigation }: any) => {
       title,
       thumbnailUrl: 'https://placehold.co/120x90',
       createdAt: Date.now(),
-      source: detectSource(url)
+      source: detectSource(url),
+      ownerUid: user.uid,
+      listIds: ['favorites'],
     };
     setVideos((p) => [created, ...p]);
     setCurrentVideo(created);
+    setUrl('');
+    setTitle('');
     setEditorOpen(false);
 
     await createVideo({ ...created, ownerUid: user.uid, listIds: ['favorites'] });
@@ -88,7 +98,7 @@ export const HomeScreen = ({ navigation }: any) => {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.bg },
-  content: { flex: 1, padding: 12, gap: 8 },
+  content: { flex: 1, padding: 12, paddingTop: 50, gap: 8 },
   title: { color: colors.text, fontSize: 16, fontWeight: '700' },
   subtitle: { color: colors.muted },
   section: { color: colors.text, fontSize: 20, fontWeight: '700', marginTop: 8 },
@@ -99,5 +109,5 @@ const styles = StyleSheet.create({
   modal: { backgroundColor: colors.card, borderTopLeftRadius: 20, borderTopRightRadius: 20, padding: 16, gap: 10 },
   modalTitle: { color: colors.text, fontSize: 18, fontWeight: '700' },
   input: { backgroundColor: '#dce9de', borderRadius: 8, paddingHorizontal: 10, paddingVertical: 10 },
-  cancel: { color: colors.muted, textAlign: 'center', marginTop: 8 }
+  cancel: { color: colors.muted, textAlign: 'center', marginTop: 8 },
 });

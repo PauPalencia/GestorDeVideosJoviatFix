@@ -35,7 +35,7 @@ export const ListsScreen = ({ navigation }: any) => {
       createdAt: Date.now(),
       isFavorite: false,
       ownerUid: user.uid,
-      videoIds: []
+      videoIds: [],
     };
     setLists((p) => [created, ...p]);
     await createList(created);
@@ -74,8 +74,11 @@ export const ListsScreen = ({ navigation }: any) => {
                 <Text style={styles.cardDesc}>{item.description}</Text>
                 <Text style={styles.date}>{new Date(item.createdAt).toLocaleDateString()}</Text>
               </View>
+              <Pressable onPress={() => navigation.navigate('EditList', { list: item })} style={styles.editBtn}>
+                <Text style={styles.editBtnText}>✎</Text>
+              </Pressable>
               <Pressable onPress={() => toggleFavorite(item)}>
-                <Text style={{ color: item.isFavorite ? '#ffd24a' : '#ffffff' }}>★</Text>
+                <Text style={{ color: item.isFavorite ? '#ffd24a' : '#ffffff', fontSize: 18 }}>★</Text>
               </Pressable>
             </View>
           )}
@@ -94,14 +97,14 @@ export const ListsScreen = ({ navigation }: any) => {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.bg },
-  content: { flex: 1, padding: 12, gap: 10 },
+  content: { flex: 1, padding: 12, paddingTop: 50, gap: 10 },
   title: { color: colors.text, fontSize: 18, fontWeight: '700' },
   searchWrap: {
     backgroundColor: colors.cardSoft,
     borderRadius: 20,
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 12
+    paddingHorizontal: 12,
   },
   search: { flex: 1, color: colors.text, paddingVertical: 8 },
   clear: { color: colors.text, fontWeight: '700' },
@@ -111,5 +114,7 @@ const styles = StyleSheet.create({
   cardTitle: { color: colors.text, fontWeight: '700' },
   cardDesc: { color: colors.muted, fontSize: 12 },
   date: { color: '#8fc18e', fontSize: 11, marginTop: 4 },
-  empty: { color: colors.text }
+  empty: { color: colors.text },
+  editBtn: { backgroundColor: colors.cardSoft, borderRadius: 8, paddingHorizontal: 8, paddingVertical: 4 },
+  editBtnText: { color: colors.text, fontSize: 16 },
 });

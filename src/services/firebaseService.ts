@@ -72,4 +72,16 @@ export const createVideo = async (video: Omit<Video, 'id' | 'createdAt'> & { lis
   });
 };
 
+export const fetchUserVideos = async (uid: string) => {
+  const q = query(collection(db, 'videos'), where('ownerUid', '==', uid));
+  const snap = await getDocs(q);
+  return snap.docs
+    .map((d) => ({ id: d.id, ...(d.data() as Omit<Video, 'id'>) }))
+    .sort((a, b) => b.createdAt - a.createdAt);
+};
+
+export const updateList = async (listId: string, data: { title: string; description: string }) => {
+  return updateDoc(doc(db, 'lists', listId), data);
+};
+
 export const currentFirebaseUser = (): User | null => auth.currentUser;

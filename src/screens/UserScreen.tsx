@@ -37,8 +37,8 @@ export const UserScreen = ({ navigation }: any) => {
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: colors.bg, padding: 14 },
-  content: { backgroundColor: colors.card, borderRadius: 12, padding: 14, marginTop: 40 },
+  container: { flex: 1, backgroundColor: colors.bg, padding: 14, paddingTop: 50 },
+  content: { backgroundColor: colors.card, borderRadius: 12, padding: 14, marginTop: 10 },
   avatar: { width: 110, height: 110, borderRadius: 55, alignSelf: 'center', marginBottom: 14 },
   label: { color: colors.muted, marginBottom: 4 },
   input: { backgroundColor: '#dce9de', borderRadius: 8, paddingHorizontal: 10, paddingVertical: 10, marginBottom: 10 },

@@ -9,6 +9,8 @@ export type Video = {
   authorName?: string;
   createdAt: number;
   source: VideoSource;
+  ownerUid?: string;
+  listIds?: string[];
 };
 
 export type VideoList = {

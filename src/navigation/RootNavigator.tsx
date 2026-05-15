@@ -10,10 +10,19 @@ import { RegisterScreen } from '../screens/RegisterScreen';
 import { HomeScreen } from '../screens/HomeScreen';
 import { UserScreen } from '../screens/UserScreen';
 import { ListsScreen } from '../screens/ListsScreen';
+import { EditListScreen } from '../screens/EditListScreen';
 import { colors } from '../theme/colors';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
+const ListsStack = createNativeStackNavigator();
+
+const ListsNavigator = () => (
+  <ListsStack.Navigator screenOptions={{ headerShown: false }}>
+    <ListsStack.Screen name="ListsMain" component={ListsScreen} />
+    <ListsStack.Screen name="EditList" component={EditListScreen} />
+  </ListsStack.Navigator>
+);
 
 const MainTabs = () => (
   <Tab.Navigator
@@ -23,11 +32,11 @@ const MainTabs = () => (
       tabBarIcon: ({ color, size }) => {
         const icon = route.name === 'Inici' ? 'star' : route.name === 'Usuari' ? 'person' : 'list';
         return <Ionicons name={icon} color={color} size={size} />;
-      }
+      },
     })}
   >
     <Tab.Screen name="Inici" component={HomeScreen} />
-    <Tab.Screen name="Llistes" component={ListsScreen} />
+    <Tab.Screen name="Llistes" component={ListsNavigator} />
     <Tab.Screen name="Usuari" component={UserScreen} />
   </Tab.Navigator>
 );
