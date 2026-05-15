@@ -42,9 +42,11 @@ export const logout = () => signOut(auth);
 export const resetPassword = (email: string) => sendPasswordResetEmail(auth, email);
 
 export const fetchLists = async (uid: string) => {
-  const q = query(collection(db, 'lists'), where('memberUids', 'array-contains', uid), orderBy('createdAt', 'desc'));
+  const q = query(collection(db, 'lists'), where('ownerUid', '==', uid));
   const snap = await getDocs(q);
-  return snap.docs.map((d) => ({ id: d.id, ...(d.data() as Omit<VideoList, 'id'>) }));
+  return snap.docs
+    .map((d) => ({ id: d.id, ...(d.data() as Omit<VideoList, 'id'>) }))
+    .sort((a, b) => b.createdAt - a.createdAt);
 };
 
 export const fetchVideosByList = async (listId: string) => {
